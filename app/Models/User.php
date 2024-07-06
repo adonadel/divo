@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserStatusEnum;
+use App\Traits\HasPersonEmail;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject, CanResetPasswordContract
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasPersonEmail;
 
     /**
      * The attributes that are mass assignable.
@@ -19,7 +23,13 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'cpf_cnpj',
+        'address_id',
         'password',
+        'status',
+        'role_id',
+        'people_id',
+        'type',
     ];
 
     /**
@@ -29,19 +39,25 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'password' => 'hashed',
+        'status' => UserStatusEnum::class,
+    ];
+
+    public function getJWTIdentifier()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }
