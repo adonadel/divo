@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EstablishmentController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -58,6 +59,19 @@ Route::prefix('establishments')->group( function() {
 
             Route::get('/', 'getEstablishments');
             Route::get('/{id}', 'getEstablishmentById');
+        });
+    });
+});
+
+Route::prefix('medias')->group( function() {
+    Route::controller(MediaController::class)->group( function() {
+        Route::middleware('auth:api')->group(function () {
+            Route::post('/', 'create');
+            Route::post('/bulk', 'bulkCreate');
+
+            Route::post('/{id}', 'update');
+
+            Route::delete('/{id}', 'delete');
         });
     });
 });
