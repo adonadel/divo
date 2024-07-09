@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Services\User;
+namespace App\Http\Services\Establishment;
 
-
-use App\Enums\UserTypeEnum;
 use App\Repositories\AddressRepository;
-use App\Repositories\UserRepository;
+use App\Repositories\EstablishmentRepository;
 
-class CreateUserService
+class CreateEstablishmentService
 {
+
     public function create(array $data)
     {
-        $userRepository = new UserRepository();
+        $repository = new EstablishmentRepository();
 
         if($addressData = data_get($data, 'address')) {
             $address = $this->handleAddress($addressData);
@@ -19,9 +18,9 @@ class CreateUserService
             unset($data['address']);
         }
 
-        $data['type'] = UserTypeEnum::USER;
+        $establishment = $repository->create($data);
 
-        return $userRepository->create($data)->load('address');
+        return $establishment;
     }
 
     private function handleAddress(array $addressData)

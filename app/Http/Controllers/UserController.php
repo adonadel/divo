@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserTypeEnum;
-use App\Extensions\CustomPassword;
-use App\Http\Requests\UserRequest;
 use App\Http\Services\User\CreateUserService;
 use App\Http\Services\User\DeleteUserService;
 use App\Http\Services\User\DisableUserService;
@@ -37,25 +34,7 @@ class UserController extends Controller
 
             $service = new CreateUserService();
 
-            $user = $service->create($request->all(), null);
-
-            DB::commit();
-
-            return $user;
-        }catch(\Exception $exception) {
-            DB::rollBack();
-            throw new \Exception($exception->getMessage());
-        }
-    }
-
-    public function createExternal(UserRequest $request)
-    {
-        try {
-            DB::beginTransaction();
-
-            $service = new CreateUserService();
-
-            $user = $service->create($request->all(), UserTypeEnum::EXTERNAL);
+            $user = $service->create($request->all());
 
             DB::commit();
 
@@ -74,41 +53,6 @@ class UserController extends Controller
             $service = new UpdateUserService();
 
             $updated = $service->update($request->all(), $id);
-
-            DB::commit();
-
-            return $updated;
-        }catch(\Exception $exception) {
-            DB::rollBack();
-            throw new \Exception($exception->getMessage());
-        }
-    }
-
-    public function updateExternal(Request $request, int $id)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string',
-            'phone' => 'nullable|string',
-            'address_id' => 'nullable|int',
-            'address' => 'nullable|array',
-            'address.id' => 'nullable|int',
-            'address.zip' => 'nullable|string',
-            'address.street' => 'nullable|string',
-            'address.number' => 'nullable|string',
-            'address.neighborhood' => 'nullable|string',
-            'address.city' => 'nullable|string',
-            'address.state' => 'nullable|string',
-            'address.complement' => 'nullable|string',
-            'address.longitude' => 'nullable|string',
-            'address.latitude' => 'nullable|string',
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            $service = new UpdateUserService();
-
-            $updated = $service->updateExternal($validated, $id);
 
             DB::commit();
 
@@ -177,12 +121,5 @@ class UserController extends Controller
             DB::rollBack();
             throw new \Exception($exception->getMessage());
         }
-    }
-
-    public function getUserByIdExternal(int $id)
-    {
-        $service = new QueryUserService();
-
-        return $service->getUserByIdExternal($id);
     }
 }

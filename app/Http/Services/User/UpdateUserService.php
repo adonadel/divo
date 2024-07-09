@@ -3,9 +3,7 @@
 namespace App\Http\Services\User;
 
 
-use App\Enums\UserTypeEnum;
 use App\Repositories\AddressRepository;
-use App\Repositories\PeopleRepository;
 use App\Repositories\UserRepository;
 
 class UpdateUserService
@@ -13,18 +11,12 @@ class UpdateUserService
     public function update(array $data, int $id)
     {
         $userRepository = new UserRepository();
-        $personRepository = new PeopleRepository();
 
-        $personData = data_get($data, 'person');
-        $person = $personRepository->getById(data_get($personData, 'id'));
-
-        if($addressData = data_get($personData, 'address')) {
+        if($addressData = data_get($data, 'address')) {
             $address = $this->handleAddress($addressData);
-            $personData['address_id'] = $address->id;
-            unset($personData['address']);
+            $data['address_id'] = $address->id;
+            unset($data['address']);
         }
-
-        $personRepository->update($person, $personData);
 
         $user = $userRepository->getById($id);
 
@@ -48,22 +40,17 @@ class UpdateUserService
     public function updateExternal(array $data, int $id)
     {
         $userRepository = new UserRepository();
-        $personRepository = new PeopleRepository();
 
-        $personData = data_get($data, 'person');
-
-        if($addressData = data_get($personData, 'address')) {
+        if($addressData = data_get($data, 'address')) {
             $address = $this->handleAddress($addressData);
-            $personData['address_id'] = $address->id;
-            unset($personData['address']);
+            $data['address_id'] = $address->id;
+            unset($data['address']);
         }
+
         $user = $userRepository->getById($id);
 
-        $personRepository->update($user->person, $personData);
+        $userRepository->update($user, $data);
 
-        if ($user->type === UserTypeEnum::INTERNAL) {
-            return $user->fresh()->load(['person.address', 'role', 'role.permissions', 'person.profilePicture']);
-        }
-        return $user->fresh();
+        return $user->fresh()->load(['address']);
     }
 }
