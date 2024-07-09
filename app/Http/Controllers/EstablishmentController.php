@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Services\Establishment\CreateEstablishmentService;
 use App\Http\Services\Establishment\DeleteEstablishmentService;
+use App\Http\Services\Establishment\FavoriteEstablishmentService;
 use App\Http\Services\Establishment\QueryEstablishmentService;
+use App\Http\Services\Establishment\UnfavoriteEstablishmentService;
 use App\Http\Services\Establishment\UpdateEstablishmentService;
 use App\Rules\ValidateCpfCnpj;
 use Illuminate\Http\Request;
@@ -135,5 +137,27 @@ class EstablishmentController extends Controller
         $service = new QueryEstablishmentService();
 
         return $service->getEstablishmentById($id);
+    }
+
+    public function favoriteEstablishment(int $id, int $userId)
+    {
+        $service = new FavoriteEstablishmentService();
+
+        $service->favorite($id, $userId);
+
+        return [
+          'message' => 'Estabelecimento favoritado com sucesso!'
+        ];
+    }
+
+    public function unfavoriteEstablishment(int $id, int $userId)
+    {
+        $service = new UnfavoriteEstablishmentService();
+
+        $service->unfavorite($id, $userId);
+
+        return [
+          'message' => 'Estabelecimento desfavoritado com sucesso!'
+        ];
     }
 }

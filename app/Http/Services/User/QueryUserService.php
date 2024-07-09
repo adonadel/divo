@@ -15,8 +15,6 @@ class QueryUserService
 
     public function getUserById(int $id)
     {
-        return (new UserRepository())->getById($id)->load([
-            'address',
-        ]);
+        return (new UserRepository())->getById($id)->load(['address', 'favorites', 'favorites.establishment']);
     }
 }
