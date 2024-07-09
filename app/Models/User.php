@@ -6,6 +6,7 @@ use App\Enums\UserStatusEnum;
 use App\Traits\HasEmail;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -52,6 +53,11 @@ class User extends Authenticatable implements JWTSubject, CanResetPasswordContra
     public function address(): BelongsTo
     {
         return $this->belongsTo(Address::class);
+    }
+
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class);
     }
 
     public function getJWTIdentifier()

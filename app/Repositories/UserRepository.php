@@ -23,7 +23,7 @@ class UserRepository extends Repository
         $query = $this->newQuery();
 
         $query
-            ->with(['address'])
+            ->with(['address', 'favorites'])
             ->when($search, function(Builder $query, $search){
                $check = StringUtils::checkIfStringStartWithNumber($search);
                return $query

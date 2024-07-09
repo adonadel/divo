@@ -54,6 +54,8 @@ Route::prefix('establishments')->group( function() {
             Route::post('/', 'create');
 
             Route::put('/{id}', 'update');
+            Route::put('/{id}/favorite/{user_id}', 'favoriteEstablishment');
+            Route::put('/{id}/unfavorite/{user_id}', 'unfavoriteEstablishment');
 
             Route::delete('/{id}', 'delete');
 
