@@ -13,7 +13,6 @@ abstract class CNPJUtils
     {
         return preg_replace('/[^\da-zA-Z]/', '', $cnpj);
     }
-
     public static function validateCnpj($cnpj)
     {
         $cnpj = preg_replace('/[^0-9]/', '', (string) $cnpj);
@@ -26,26 +25,34 @@ abstract class CNPJUtils
             return false;
         }
 
-        for ($i = 0, $j = 5, $soma = 0; $i < 12; $i++)
-        {
+        $soma = 0;
+        for ($i = 0, $j = 5; $i < 12; $i++) {
             $soma += $cnpj[$i] * $j;
             $j = ($j === 2) ? 9 : $j - 1;
         }
 
         $resto = $soma % 11;
 
-        if ($cnpj[12] !== ($resto < 2 ? 0 : 11 - $resto)) {
+        $dv1 = ($resto < 2) ? 0 : 11 - $resto;
+
+        if ($cnpj[12] != $dv1) {
             return false;
         }
 
-        for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++)
-        {
+        $soma = 0;
+        for ($i = 0, $j = 6; $i < 13; $i++) {
             $soma += $cnpj[$i] * $j;
             $j = ($j === 2) ? 9 : $j - 1;
         }
 
         $resto = $soma % 11;
 
-        return $cnpj[13] === ($resto < 2 ? 0 : 11 - $resto);
+        $dv2 = ($resto < 2) ? 0 : 11 - $resto;
+
+        if ($cnpj[13] != $dv2) {
+            return false;
+        }
+
+        return true;
     }
 }

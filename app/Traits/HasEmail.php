@@ -2,10 +2,10 @@
 
 namespace App\Traits;
 
-trait HasPersonEmail
+trait HasEmail
 {
     public function getEmailForPasswordReset()
     {
-        return $this->person->email;
+        return $this->email;
     }
 }

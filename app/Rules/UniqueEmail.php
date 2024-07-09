@@ -20,9 +20,8 @@ class UniqueEmail implements ValidationRule
     {
         $exists = $this->repository->newQuery()
             ->where('status', 'enabled')
-            ->whereHas('person', function ($query) use ($value) {
-                return $query->where('email', Str::lower($value));
-            })->exists();
+            ->where('email', Str::lower($value))
+            ->exists();
 
         if ($exists) {
             $fail(':attribute já existente no banco de dados');

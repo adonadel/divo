@@ -19,9 +19,8 @@ class UniqueCpfCnpj implements ValidationRule
     {
         $exists = $this->repository->newQuery()
             ->where('status', 'enabled')
-            ->whereHas('person', function ($query) use ($value) {
-                return $query->where('cpf_cnpj', $value);
-            })->exists();
+            ->where('cpf_cnpj', $value)
+            ->exists();
 
         if ($exists) {
             $fail(':attribute já existente no banco de dados');

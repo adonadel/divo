@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EstablishmentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +43,21 @@ Route::prefix('users')->group( function() {
             Route::post('/external', 'createExternal');
             Route::put('/external/{id}', 'updateExternal');
             Route::get('/external/{id}', 'getUserByIdExternal');
+        });
+    });
+});
+
+Route::prefix('establishments')->group( function() {
+    Route::controller(EstablishmentController::class)->group( function() {
+        Route::middleware('auth:api')->group(function () {
+            Route::post('/', 'create');
+
+            Route::put('/{id}', 'update');
+
+            Route::delete('/{id}', 'delete');
+
+            Route::get('/', 'getEstablishments');
+            Route::get('/{id}', 'getEstablishmentById');
         });
     });
 });
