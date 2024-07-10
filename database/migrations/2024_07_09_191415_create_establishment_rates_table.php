@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Media;
-use App\Models\Product;
+use App\Models\Establishment;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,10 +13,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_media', function (Blueprint $table) {
+        Schema::create('establishment_rates', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Media::class)->nullable();
-            $table->foreignIdFor(Product::class)->nullable();
+            $table->foreignIdFor(Establishment::class)->nullable();
+            $table->foreignIdFor(User::class)->nullable();
+            $table->double('rate');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_media');
+        Schema::dropIfExists('establishment_rates');
     }
 };

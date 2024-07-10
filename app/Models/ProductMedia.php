@@ -14,7 +14,6 @@ class ProductMedia extends Pivot
     protected $fillable = [
         'product_id',
         'media_id',
-        'is_cover',
     ];
 
     public function product(): BelongsTo
