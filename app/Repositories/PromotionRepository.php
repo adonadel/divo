@@ -6,6 +6,7 @@ use App\Models\Promotion;
 
 class PromotionRepository extends Repository
 {
+    protected $table = 'promotions';
 
     protected function getModelClass(): string
     {

@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToOne;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property Establishment $establishment
@@ -29,5 +31,10 @@ class Product extends Model
     public function medias(): BelongsToMany
     {
         return $this->belongsToMany(Media::class, 'product_media');
+    }
+
+    public function promotion(): HasOne
+    {
+        return $this->hasOne(Promotion::class);
     }
 }

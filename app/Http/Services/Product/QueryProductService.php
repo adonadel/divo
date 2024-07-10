@@ -15,18 +15,20 @@ class QueryProductService
 
     public function getProductById(int $id)
     {
-        return (new ProductRepository())->getById($id)->load([
-            'establishment'
+        $product = (new ProductRepository())->getById($id)->load([
+            'establishment',
+            'promotion'
         ]);
-    }
 
-    public function getProductByIdExternal(int $id)
-    {
-        $product = (new ProductRepository())->getById($id);
-        
-        return [
-            'name' => $product->name,
-            'value' => $product->description,
-        ];
+        if ($product->promotion && $product->promotion->date_finish >= date('Y-m-d')) {
+            $valueWithPromotion = round($product->value * ($product->promotion->percent / 100), 2);
+
+            return [
+                ...$product->toArray(),
+                'value_with_promotion' => $valueWithPromotion,
+            ];
+        }
+
+        return $product;
     }
 }

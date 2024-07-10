@@ -14,8 +14,8 @@ return new class extends Migration
     {
         Schema::create('promotions', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
-            $table->foreignIdFor(Product::class)->nullable();
+            $table->string('description')->nullable();
+            $table->foreignIdFor(Product::class);
             $table->date('date_start');
             $table->date('date_finish');
             $table->integer('percent');
