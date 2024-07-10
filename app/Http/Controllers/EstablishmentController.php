@@ -7,6 +7,7 @@ use App\Http\Services\Establishment\CreateEstablishmentService;
 use App\Http\Services\Establishment\DeleteEstablishmentService;
 use App\Http\Services\Establishment\FavoriteEstablishmentService;
 use App\Http\Services\Establishment\QueryEstablishmentService;
+use App\Http\Services\Establishment\RateEstablishmentService;
 use App\Http\Services\Establishment\UnfavoriteEstablishmentService;
 use App\Http\Services\Establishment\UpdateEstablishmentService;
 use App\Rules\ValidateCpfCnpj;
@@ -158,6 +159,17 @@ class EstablishmentController extends Controller
 
         return [
           'message' => 'Estabelecimento desfavoritado com sucesso!'
+        ];
+    }
+
+    public function rateEstablishment(Request $request, int $id)
+    {
+        $service = new RateEstablishmentService();
+
+        $service->rate($id, $request->only('rate'));
+
+        return [
+            'message' => 'Estabelecimento avaliado com sucesso!'
         ];
     }
 }

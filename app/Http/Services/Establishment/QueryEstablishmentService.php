@@ -13,6 +13,13 @@ class QueryEstablishmentService
 
     public function getEstablishmentById(int $id)
     {
-        return (new EstablishmentRepository())->getById($id)->load('address', 'user', 'category');
+        $establishment = (new EstablishmentRepository())->getById($id)->load('address', 'user', 'category', 'rates');
+
+        $rates = $establishment->rates->pluck('rate');
+
+        return [
+            ...$establishment->toArray(),
+            'overall_rating' => $rates->sum() / $rates->count(),
+        ];
     }
 }
