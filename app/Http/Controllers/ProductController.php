@@ -2,29 +2,25 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Http\Requests\ProductRequest;
 use App\Http\Services\Product\CreateProductService;
 use App\Http\Services\Product\DeleteProductService;
 use App\Http\Services\Product\QueryProductService;
 use App\Http\Services\Product\UpdateProductService;
-use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rules\File;
 
 class ProductController extends Controller
 {
     public function create(Request $request)
     {
-        Gate::authorize('create', Product::class);
-
         try {
             $validated = $request->validate([
                 'name' => 'required|string',
                 'description' => 'nullable|string',
-                'value' => 'required|decimal:8,2',
+                'value' => 'required',
                 'establishment_id' => 'required|int',
+                'medias' => 'string|required',
             ]);
 
             DB::beginTransaction();
@@ -45,21 +41,25 @@ class ProductController extends Controller
 
     public function update(Request $request, int $id)
     {
-        Gate::authorize('update', Product::class);
-
         try {
             $validated = $request->validate([
                 'name' => 'required|string',
                 'description' => 'nullable|string',
                 'value' => 'required|decimal:8,2',
                 'establishment_id' => 'required|int',
+                'medias' => 'nullable|array',
+                'medias.*.media' => [
+                    'required', File::types(['jpg', 'jpeg', 'png'])
+                ],
+                'medias.*.display_name' => 'nullable|string',
+                'medias.*.description' => 'nullable|string',
             ]);
 
             DB::beginTransaction();
 
             $service = new UpdateProductService();
 
-            $updated = $service->update($validated, $id);
+            $updated = $service->update($id, $validated);
 
             DB::commit();
 
@@ -73,8 +73,6 @@ class ProductController extends Controller
 
     public function delete(int $id)
     {
-        Gate::authorize('delete', Product::class);
-
         try {
             DB::beginTransaction();
 
@@ -108,10 +106,8 @@ class ProductController extends Controller
         return $service->getProductById($id);
     }
 
-    public function createWithMedias(ProductRequest $request)
+    public function createWithMedias(Request $request)
     {
-        Gate::authorize('create', Product::class);
-
         try {
             DB::beginTransaction();
 

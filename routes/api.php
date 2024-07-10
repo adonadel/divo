@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EstablishmentController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -74,6 +75,22 @@ Route::prefix('medias')->group( function() {
             Route::post('/{id}', 'update');
 
             Route::delete('/{id}', 'delete');
+        });
+    });
+});
+
+Route::prefix('products')->group( function() {
+    Route::controller(ProductController::class)->group( function() {
+        Route::middleware('auth:api')->group(function () {
+            Route::post('/', 'create');
+            Route::post('/with-medias', 'createWithMedias');
+
+            Route::put('/{id}', 'update');
+
+            Route::delete('/{id}', 'delete');
+
+            Route::get('/', 'getProducts');
+            Route::get('/{id}', 'getProductById');
         });
     });
 });

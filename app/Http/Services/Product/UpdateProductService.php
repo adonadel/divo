@@ -2,30 +2,22 @@
 
 namespace App\Http\Services\Product;
 
-use App\Enums\ProductTypeEnum;
-use App\Repositories\AddressRepository;
 use App\Repositories\ProductRepository;
 
 class UpdateProductService
 {
-    public function update(int $id)
+    public function update(int $id, array $data)
     {
         $productRepository = new ProductRepository();
 
-        $product = $productRepository->getById($id);
-
-        return $productRepository->update($product);
-    }
-
-    public function updateExternal(array $data, int $id)
-    {
-        $productRepository = new ProductRepository();
+        $mediasIds = data_get($data, 'medias');
 
         $product = $productRepository->getById($id);
 
-        if ($product->type === ProductTypeEnum::INTERNAL) {
-            return $product->fresh()->load(['establishment']);
+        if ($mediasIds && $exploded = explode(",", trim($mediasIds))) {
+            $product->medias()->sync($exploded);
         }
-        return $product->fresh();
+
+        return $productRepository->update($product, $data);
     }
 }
