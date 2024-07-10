@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\Product\CreateProductService;
+use App\Http\Services\Product\CreatePromotionService;
 use App\Http\Services\Product\DeleteProductService;
+use App\Http\Services\Product\DeletePromotionService;
 use App\Http\Services\Product\QueryProductService;
 use App\Http\Services\Product\UpdateProductService;
 use Illuminate\Http\Request;
@@ -118,6 +120,53 @@ class ProductController extends Controller
             DB::commit();
 
             return $product;
+        }catch (\Exception $exception) {
+            DB::rollBack();
+
+            throw new \Exception($exception->getMessage());
+        }
+    }
+
+    public function createPromotion(Request $request, int $id)
+    {
+        try {
+            $validated = $request->validate([
+                'description' => 'nullable|string',
+                'percent' => 'integer|required',
+                'date_start' => 'required|date',
+                'date_finish' => 'required|date',
+            ]);
+
+            DB::beginTransaction();
+
+            $service = new CreatePromotionService();
+
+            $product = $service->create($validated, $id);
+
+            DB::commit();
+
+            return $product;
+        }catch (\Exception $exception) {
+            DB::rollBack();
+
+            throw new \Exception($exception->getMessage());
+        }
+    }
+
+    public function deletePromotion(int $id, int $promotionId)
+    {
+        try {
+            DB::beginTransaction();
+
+            $service = new DeletePromotionService();
+
+            $service->delete($id, $promotionId);
+
+            DB::commit();
+
+            return [
+                'message' => 'Promoção removida com sucesso!'
+            ];
         }catch (\Exception $exception) {
             DB::rollBack();
 

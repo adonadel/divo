@@ -29,8 +29,6 @@ Route::prefix('users')->group( function() {
             Route::get('/{id}', 'getUserById');
             Route::get('/logged-user', 'getLoggedUser');
 
-            Route::post('/', 'create');
-
             Route::put('/{id}', 'update');
 
             Route::patch('/{id}/enable', 'enable');
@@ -40,11 +38,9 @@ Route::prefix('users')->group( function() {
         });
 
         Route::middleware('api')->group(function () {
+            Route::post('/', 'create');
             Route::post('/forgot-password', 'forgotPassword');
             Route::post('/reset-password', 'resetPassword');
-            Route::post('/external', 'createExternal');
-            Route::put('/external/{id}', 'updateExternal');
-            Route::get('/external/{id}', 'getUserByIdExternal');
         });
     });
 });
@@ -85,10 +81,12 @@ Route::prefix('products')->group( function() {
         Route::middleware('auth:api')->group(function () {
             Route::post('/', 'create');
             Route::post('/with-medias', 'createWithMedias');
+            Route::post('/{id}/promotion', 'createPromotion');
 
             Route::put('/{id}', 'update');
 
             Route::delete('/{id}', 'delete');
+            Route::delete('/{id}/promotion/{promotion_id}', 'deletePromotion');
 
             Route::get('/', 'getProducts');
             Route::get('/{id}', 'getProductById');
