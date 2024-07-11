@@ -173,4 +173,11 @@ class ProductController extends Controller
             throw new \Exception($exception->getMessage());
         }
     }
+
+    public function getPromotions()
+    {
+        $service = new QueryProductService();
+
+        return $service->getPromotions();
+    }
 }

@@ -198,4 +198,11 @@ class EstablishmentController extends Controller
             'message' => 'Estabelecimento avaliado com sucesso!'
         ];
     }
+
+    public function getProducts(int $id)
+    {
+        $service = new QueryEstablishmentService();
+
+        return $service->getEstablishmentProducts($id);
+    }
 }

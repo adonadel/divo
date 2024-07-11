@@ -3,6 +3,7 @@
 namespace App\Http\Services\Establishment;
 
 use App\Repositories\EstablishmentRepository;
+use App\Repositories\ProductRepository;
 
 class QueryEstablishmentService
 {
@@ -51,5 +52,25 @@ class QueryEstablishmentService
         }
 
         return $establishments;
+    }
+
+    public function getEstablishmentProducts(int $id)
+    {
+        $productRepository = new ProductRepository();
+
+        $products = $productRepository->newQuery()
+            ->with(['promotion'])
+            ->where('establishment_id', $id)
+            ->get()
+            ->map(function ($product) {
+                if ($product->promotion && $product->promotion->date_finish >= date('Y-m-d')) {
+                    $valueWithPromotion = round($product->value * ($product->promotion->percent / 100), 2);
+
+                    $product->value_with_promotion = $valueWithPromotion;
+                }
+                return $product;
+            });
+
+        return $products;
     }
 }
