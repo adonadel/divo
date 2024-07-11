@@ -20,7 +20,7 @@ class EstablishmentRepository extends Repository
         $query = $this->newQuery();
 
         $query
-            ->with(['address', 'category', 'user'])
+            ->with(['address', 'category', 'user', 'rates'])
             ->when($search, function(Builder $query, $search){
                 $query
                     ->whereRaw('unaccent(name) ilike unaccent(?)', ["%{$search}%"])
@@ -28,10 +28,32 @@ class EstablishmentRepository extends Repository
             });
 
         if ($noPaginate) {
-            return $query->get();
+            return $query->get()->map(function (Establishment $establishment) {
+                if (count($establishment->rates) > 0) {
+                    $rates = $establishment->rates->pluck('rate');
+
+                    $establishment->overall_rating = $rates->sum() / $rates->count();
+                }
+
+                if ($establishment->favorite()->where('user_id', auth()->id())->exists()) {
+                    $establishment->isFavorited = true;
+                }
+                return $establishment;
+            });
         }
 
-        return $query->paginate();
+        return $query->paginate()->map(function (Establishment $establishment) {
+            if (count($establishment->rates) > 0) {
+                $rates = $establishment->rates->pluck('rate');
+
+                $establishment->overall_rating = $rates->sum() / $rates->count();
+            }
+            
+            if ($establishment->favorite()->where('user_id', auth()->id())->exists()) {
+                $establishment->isFavorited = true;
+            }
+            return $establishment;
+        });
     }
 
 

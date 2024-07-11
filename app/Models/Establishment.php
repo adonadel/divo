@@ -39,4 +39,9 @@ class Establishment extends Model
     {
         return $this->hasMany(EstablishmentRate::class);
     }
+
+    public function favorite(): HasMany
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }

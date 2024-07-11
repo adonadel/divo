@@ -15,11 +15,20 @@ class QueryEstablishmentService
     {
         $establishment = (new EstablishmentRepository())->getById($id)->load('address', 'user', 'category', 'rates');
 
-        $rates = $establishment->rates->pluck('rate');
 
-        return [
-            ...$establishment->toArray(),
-            'overall_rating' => $rates->sum() / $rates->count(),
-        ];
+        if ($establishment->favorite()->where('user_id', auth()->id())->exists()) {
+            $establishment->isFavorited = true;
+        }
+
+        if (count($establishment->rates) > 0) {
+            $rates = $establishment->rates->pluck('rate');
+
+            return [
+                ...$establishment->toArray(),
+                'overall_rating' => $rates->sum() / $rates->count(),
+            ];
+        }
+
+        return $establishment;
     }
 }
