@@ -17,7 +17,7 @@ class QueryEstablishmentService
 
 
         if ($establishment->favorite()->where('user_id', auth()->id())->exists()) {
-            $establishment->isFavorited = true;
+            $establishment->is_favorited = true;
         }
 
         if (count($establishment->rates) > 0) {

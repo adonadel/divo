@@ -36,7 +36,7 @@ class EstablishmentRepository extends Repository
                 }
 
                 if ($establishment->favorite()->where('user_id', auth()->id())->exists()) {
-                    $establishment->isFavorited = true;
+                    $establishment->is_favorited = true;
                 }
                 return $establishment;
             });
@@ -48,9 +48,9 @@ class EstablishmentRepository extends Repository
 
                 $establishment->overall_rating = $rates->sum() / $rates->count();
             }
-            
+
             if ($establishment->favorite()->where('user_id', auth()->id())->exists()) {
-                $establishment->isFavorited = true;
+                $establishment->is_favorited = true;
             }
             return $establishment;
         });
