@@ -36,6 +36,7 @@ class QueryEstablishmentService
         $establishmentRepository = new EstablishmentRepository();
 
         $establishments = $establishmentRepository->newQuery()
+            ->with(['address', 'user', 'category', 'rates', 'medias'])
             ->whereHas('favorite', function ($query) use ($userId){
                 $query->where('user_id', $userId);
             })
