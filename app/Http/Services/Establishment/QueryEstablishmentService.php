@@ -13,8 +13,7 @@ class QueryEstablishmentService
 
     public function getEstablishmentById(int $id)
     {
-        $establishment = (new EstablishmentRepository())->getById($id)->load('address', 'user', 'category', 'rates');
-
+        $establishment = (new EstablishmentRepository())->getById($id)->load('address', 'user', 'category', 'rates', 'medias');
 
         if ($establishment->favorite()->where('user_id', auth()->id())->exists()) {
             $establishment->is_favorited = true;
@@ -30,5 +29,18 @@ class QueryEstablishmentService
         }
 
         return $establishment;
+    }
+
+    public function getMyFavoriteEstablishments(int $userId)
+    {
+        $establishmentRepository = new EstablishmentRepository();
+
+        $establishments = $establishmentRepository->newQuery()
+            ->whereHas('favorite', function ($query) use ($userId){
+                $query->where('user_id', $userId);
+            })
+            ->get();
+
+        return $establishments;
     }
 }

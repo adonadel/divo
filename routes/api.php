@@ -49,6 +49,7 @@ Route::prefix('establishments')->group( function() {
     Route::controller(EstablishmentController::class)->group( function() {
         Route::middleware('auth:api')->group(function () {
             Route::post('/', 'create');
+            Route::post('/with-medias', 'createWithMedias');
 
             Route::put('/{id}', 'update');
             Route::put('/{id}/favorite/{user_id}', 'favoriteEstablishment');
@@ -59,6 +60,7 @@ Route::prefix('establishments')->group( function() {
 
             Route::get('/', 'getEstablishments');
             Route::get('/{id}', 'getEstablishmentById');
+            Route::get('/{user_id}/favorites', 'getMyFavorites');
         });
     });
 });

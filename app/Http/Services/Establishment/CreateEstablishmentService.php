@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Establishment;
 
+use App\Http\Services\Media\CreateMediaService;
 use App\Repositories\AddressRepository;
 use App\Repositories\EstablishmentRepository;
 
@@ -35,5 +36,29 @@ class CreateEstablishmentService
         }
 
         return $address;
+    }
+
+    public function createWithMedias(array $data)
+    {
+        $repository = new EstablishmentRepository();
+
+        if($addressData = data_get($data, 'address')) {
+            $address = $this->handleAddress($addressData);
+            $data['address_id'] = $address->id;
+            unset($data['address']);
+        }
+
+        $establishment = $repository->create($data);
+
+        if (data_get($data, 'medias')) {
+            foreach (data_get($data, 'medias') as $media){
+                $createMediaService = new CreateMediaService();
+
+                $media = $createMediaService->create($media);
+                $establishment->medias()->sync($media->id);
+            }
+        }
+
+        return $establishment->fresh();
     }
 }

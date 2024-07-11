@@ -20,7 +20,7 @@ class EstablishmentRepository extends Repository
         $query = $this->newQuery();
 
         $query
-            ->with(['address', 'category', 'user', 'rates'])
+            ->with(['address', 'category', 'user', 'rates', 'medias'])
             ->when($search, function(Builder $query, $search){
                 $query
                     ->whereRaw('unaccent(name) ilike unaccent(?)', ["%{$search}%"])

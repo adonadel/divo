@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Establishment extends Model
@@ -43,5 +44,10 @@ class Establishment extends Model
     public function favorite(): HasMany
     {
         return $this->hasMany(Favorite::class);
+    }
+
+    public function medias(): BelongsToMany
+    {
+        return $this->belongsToMany(Media::class, 'establishment_media');
     }
 }

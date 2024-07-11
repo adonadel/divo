@@ -60,6 +60,25 @@ class EstablishmentController extends Controller
         }
     }
 
+    public function createWithMedias(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $service = new CreateEstablishmentService();
+
+            $product = $service->createWithMedias($request->all());
+
+            DB::commit();
+
+            return $product;
+        }catch (\Exception $exception) {
+            DB::rollBack();
+
+            throw new \Exception($exception->getMessage());
+        }
+    }
+
     public function update(Request $request, int $id)
     {
         try {
@@ -138,6 +157,13 @@ class EstablishmentController extends Controller
         $service = new QueryEstablishmentService();
 
         return $service->getEstablishmentById($id);
+    }
+
+    public function getMyFavorites(int $userId)
+    {
+        $service = new QueryEstablishmentService();
+
+        return $service->getMyFavoriteEstablishments($userId);
     }
 
     public function favoriteEstablishment(int $id, int $userId)
