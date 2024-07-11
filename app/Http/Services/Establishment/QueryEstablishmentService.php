@@ -42,6 +42,14 @@ class QueryEstablishmentService
             })
             ->get();
 
+        foreach ($establishments as $establishment) {
+            if (count($establishment->rates) > 0) {
+                $rates = $establishment->rates->pluck('rate');
+
+                $establishment->overall_rating = $rates->sum() / $rates->count();
+            }
+        }
+
         return $establishments;
     }
 }
