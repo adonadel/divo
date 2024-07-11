@@ -61,6 +61,7 @@ Route::prefix('establishments')->group( function() {
             Route::get('/', 'getEstablishments');
             Route::get('/{id}', 'getEstablishmentById');
             Route::get('/{user_id}/favorites', 'getMyFavorites');
+            Route::get('/{id}/products', 'getProducts');
         });
     });
 });
@@ -92,6 +93,7 @@ Route::prefix('products')->group( function() {
 
             Route::get('/', 'getProducts');
             Route::get('/{id}', 'getProductById');
+            Route::get('/promotions/all', 'getPromotions');
         });
     });
 });
